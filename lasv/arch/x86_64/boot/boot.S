@@ -13,24 +13,33 @@ _start:
     ljmp $0, $_setup16
 
 _setup16:
-    cli
-
     call clear_screen
     call reset_cursor
 
-    mov booting_msg, %si
+    lea initializing_msg, %si
     call print_string
 
-    jmp die
+    mov $SETUP_PHYS_ADDR, %bx
+    call disk_read
+
+    lea stage2_load_done_msg, %si
+    call print_string
+
+    jmp SETUP_PHYS_ADDR
+
+    call die
 
 die:
     hlt
 
-booting_msg:
-    .asciz "Bootstraping stage 2."
+initializing_msg:
+    .asciz "Bootstrapping stage 2... "
 
-.include "screen.S"
-.include "vga.S"
+stage2_load_done_msg:
+    .asciz "Sucessfully read stage 2. Jumping..."
+
+.include "../shared/screen.S"
+.include "../shared/vga.S"
 .include "drive.S"
 
 setup_id: .asciz "/BOOT/SETUP.BIN;1"

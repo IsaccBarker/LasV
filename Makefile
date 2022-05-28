@@ -11,7 +11,7 @@ all:
 	$(PROGRESS) "Status" "Done!"
 
 run: all
-	qemu-system-x86_64 -drive file=target/out/lasv.bin,format=raw,media=disk
+	@qemu-system-x86_64 target/out/lasv.bin
 
 clean:
 	@rm -rf target
