@@ -1,31 +1,31 @@
 .code16
 
-.text
+.section .text
 
 print_string:
-    push %bp
-    mov %sp, %bp
+	push %bp
+	mov %sp, %bp
 
-    pusha
+	pusha
 
-    mov $0x00, %bh
-    mov $0x00, %bl
-    mov $0x0e, %ah
+	mov $0x00, %bh
+	mov $0x00, %bl
+	mov $0x0e, %ah
 
 .print_char:
-    lodsb
+	lodsb
 
-    cmp $0, %al
-    je .done
+	cmp $0, %al
+	je .done
 
-    int $0x10
-    jmp .print_char
+	int $0x10
+	jmp .print_char
 
 .done:
-    popa
+	popa
 
-    mov %bp, %sp
-    pop %bp
+	mov %bp, %sp
+	pop %bp
 
-    ret
+	ret
 

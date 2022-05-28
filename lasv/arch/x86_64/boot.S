@@ -13,23 +13,25 @@ _start:
     ljmp $0, $_setup16
 
 _setup16:
-    call reset_hard_drive
+    cli
+
     call clear_screen
     call reset_cursor
 
-    lea initializing_msg, %si
+    mov booting_msg, %si
     call print_string
 
-    call die
+    jmp die
 
 die:
     hlt
 
-initializing_msg:
-    .asciz  "Initializing LasV (Lassa Mammarenavirus)..."
+booting_msg:
+    .asciz "Bootstraping stage 2."
 
 .include "screen.S"
 .include "vga.S"
+.include "drive.S"
 
 setup_id: .asciz "/BOOT/SETUP.BIN;1"
     . = _start + 510
