@@ -3,7 +3,7 @@
 .section .text
 
 disk_read:
-	/* store all register values */
+	/* Store all register values */
 	pusha
 	push %dx
 
@@ -23,13 +23,13 @@ disk_read:
 	/* In case of read error show the message about it. */
 	jc disk_read_error
 
-	/* Check if we read expected count of sectors if not,
+	/* Check if we read expected count of sectors. If not,
         show the message with error. */
 	pop %dx
-	cmp %al, %dh
+	cmp %al, %al
 	jne disk_read_error
 
-	/* Restore register values and ret. */
+	/* Restore register values and return. */
 	popa
 	ret
 
@@ -39,5 +39,5 @@ disk_read_error:
 	hlt
 
 disk_read_error_msg:
-    .asciz "Failed to read disk! "
+    .asciz "Failed to read disk."
 
