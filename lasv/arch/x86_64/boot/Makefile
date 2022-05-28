@@ -13,5 +13,5 @@ all: $(OBJ)
 
 %.o: %.c $(DEPS)
 	$(PROGRESS) "CC" "$<"
-	@$(CC) -S -o "$(BASE)/target/intermediate/$<.s" $< -std=gnu99 -ffreestanding -O2 -Wall -Wextra $(CFLAGS)
+	@$(CC) -S -o "$(BASE)/target/intermediate/$<.s" $< -std=gnu99 -ffreestanding -O2 -Wall -Wextra -m32 $(CFLAGS)
 	@$(AS) -o "$(BASE)/target/obj/boot-$@" "$(BASE)/target/intermediate/$<.s" $(ASFLAGS)

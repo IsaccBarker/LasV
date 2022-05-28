@@ -13,30 +13,54 @@ _start:
     ljmp $0, $_setup16
 
 _setup16:
-    call clear_screen
-    call reset_cursor
+    cli
 
-    lea initializing_msg, %si
-    call print_string
+	xorw %ax, %ax
+	movw %ax, %ss
+	movw %ax, %ds
+	movw %ax, %es
 
-    mov $SETUP_PHYS_ADDR, %bx
-    call disk_read
+	movw $BOOT_STACK_ADDR, %sp
 
-    lea stage2_load_done_msg, %si
-    call print_string
+	/* Save disk drive. */
 
-    jmp SETUP_PHYS_ADDR
+	movb %dl, boot_params_disk_drive
 
-    call die
+	/* Clear screen and reset text mode cursor. */
+	call clear_screen
+	call reset_cursor
+
+	lea initializing_msg, %si
+	call print_string
+
+	/* Load the Primary Volume Descriptor into memory. */
+	call read_pvd
+
+ 	/* Load BOOT directory. */
+	lea setup_id, %ax
+	movw $SETUP_SEGMENT, %di
+	call read_entry
+
+	ljmp $0, $SETUP_PHYS_ADDR
+
+	/* Something went terribly wrong. */
+	jmp die
 
 die:
-    hlt
+	hlt
+
+boot_params:
+
+/* This struct contains boot relevant informations */
+
+boot_params_disk_drive: 
+	.byte   0x0
+
+a20_error_msg:
+	.asciz  "Could not enable A20 line"
 
 initializing_msg:
     .asciz "Bootstrapping stage 2... "
-
-stage2_load_done_msg:
-    .asciz "Sucessfully read stage 2. Jumping..."
 
 .include "../shared/screen.S"
 .include "../shared/vga.S"
