@@ -1,6 +1,8 @@
 .code16
 
 .text
+    .global clear_screen
+    .global reset_cursor
 
 clear_screen:
     push %bp

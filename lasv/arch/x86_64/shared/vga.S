@@ -1,6 +1,7 @@
 .code16
 
 .text
+    .global print_char
 
 print_string:
     push %bp
