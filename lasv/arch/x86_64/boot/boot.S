@@ -22,10 +22,6 @@ _setup16:
 
 	movw $BOOT_STACK_ADDR, %sp
 
-	/* Save disk drive. */
-
-	movb %dl, boot_params_disk_drive
-
 	/* Clear screen and reset text mode cursor. */
 	call clear_screen
 	call reset_cursor
@@ -33,13 +29,7 @@ _setup16:
 	lea initializing_msg, %si
 	call print_string
 
-	/* Load the Primary Volume Descriptor into memory. */
-	call read_pvd
-
- 	/* Load BOOT directory. */
-	lea setup_id, %ax
-	movw $SETUP_SEGMENT, %di
-	call read_entry
+    call load_sector2
 
 	ljmp $0, $SETUP_PHYS_ADDR
 
@@ -48,16 +38,6 @@ _setup16:
 
 die:
 	hlt
-
-boot_params:
-
-/* This struct contains boot relevant informations */
-
-boot_params_disk_drive: 
-	.byte   0x0
-
-a20_error_msg:
-	.asciz  "Could not enable A20 line"
 
 initializing_msg:
     .asciz "Bootstrapping stage 2... "
