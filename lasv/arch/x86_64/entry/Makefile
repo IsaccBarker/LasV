@@ -1,7 +1,7 @@
 include ../../../../base.mk
 
 DEPS =
-OBJ = entry.o
+OBJ = entry.o enter.o real/vga.c
 
 all: $(OBJ)
 	$(PROGRESS) "LD" "entry.bin"
