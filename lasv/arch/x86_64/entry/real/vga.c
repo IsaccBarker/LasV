@@ -1,8 +1,9 @@
 #include "../../shared/vga.h"
 
 void
-print_string(char* str)
+real_print_string(char* str)
 {
-
+    *((int*)0xb8000)=0x07690748;
+    // asm volatile ("");
 }
 
