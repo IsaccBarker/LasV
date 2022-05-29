@@ -51,3 +51,5 @@ setup_id: .asciz "/BOOT/SETUP.BIN;1"
     .byte 0x55
     .byte 0xaa
 
+// . = _start + (SETUP_PHYS_ADDR - BOOT_IMAGE_ADDR)
+
