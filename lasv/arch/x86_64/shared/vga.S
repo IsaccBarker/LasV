@@ -3,7 +3,7 @@
 .text
     .global print_char
 
-print_string:
+/* print_string:
     push %bp
     mov %sp, %bp
 
@@ -11,9 +11,9 @@ print_string:
 
     mov $0x00, %bh
     mov $0x00, %bl
-    mov $0x0e, %ah
+    mov $0x0e, %ah */
 
-.print_char:
+/* .print_char:
     lodsb
 
     cmp $0, %al
@@ -28,5 +28,19 @@ print_string:
     mov %bp, %sp
     pop %bp
 
-    ret
+    ret */
+
+print_string:
+    lodsb
+
+    or %al, %al
+    jz .done
+
+    mov $0x0E, %ah
+    int $0x10
+
+    jmp print_string
+
+.done:
+   ret
 
