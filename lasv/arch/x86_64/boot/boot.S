@@ -8,6 +8,7 @@
 
 .text
     .global _start
+    .global lasv_find_and_boot_elf
 
 _start:
     ljmp $0, $_setup16
@@ -26,27 +27,22 @@ _setup16:
 	call clear_screen
 	call reset_cursor
 
-	lea initializing_msg, %si
-	call print_string
+    call lasv_find_and_boot_elf
 
-    call load_sector2
+    /* call load_sector2
 
 	ljmp $0, $SETUP_PHYS_ADDR
 
-	/* Something went terribly wrong. */
-	jmp die
+	/* Something went terribly wrong. * /
+	jmp die */
 
 die:
 	hlt
 
-initializing_msg:
-    .asciz "Bootstrapping stage 2... "
-
 .include "../shared/screen.S"
 .include "../shared/vga.S"
-.include "drive.S"
 
-setup_id: .asciz "/BOOT/SETUP.BIN;1"
+setup_id:
     . = _start + 510
     .byte 0x55
     .byte 0xaa

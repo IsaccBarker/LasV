@@ -24,15 +24,7 @@ load_sector2:
     ret
 
 read_failure:
-    /* Print error. */
-    pop %gs
-    mov %gs, %si
-    call print_string
-
     hlt
-
-read_failure_msg:
-    .asciz "Failed to read disk."
 
 noop:
 

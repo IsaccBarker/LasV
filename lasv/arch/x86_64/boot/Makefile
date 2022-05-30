@@ -1,7 +1,7 @@
 include ../../../../base.mk
 
-DEPS =
-OBJ = boot.o
+DEPS = elf.h
+OBJ = boot.o elf.o
 
 all: $(OBJ)
 	$(PROGRESS) "LD" "boot.bin"
@@ -13,5 +13,5 @@ all: $(OBJ)
 
 %.o: %.c $(DEPS)
 	$(PROGRESS) "CC" "$<"
-	$(CC) -S -o "$(BASE)/target/intermediate/$<.s" $< -std=gnu99 -ffreestanding -O2 -Wall -Wextra $(CFLAGS)
+	$(CC) -S -o "$(BASE)/target/intermediate/$<.s" $< -std=gnu99 -ffreestanding -Os -s -fdelete-null-pointer-checks -Wall -Wextra $(CFLAGS)
 	$(AS) -o "$(BASE)/target/obj/boot-$@" "$(BASE)/target/intermediate/$<.s" $(ASFLAGS)
