@@ -12,7 +12,7 @@ all:
 	$(PROGRESS) "Status" "Done!"
 
 run: all
-	qemu-system-x86_64 -vga virtio -m 512 -boot d -cdrom target/out/lasv.iso
+	qemu-system-x86_64 -vga virtio -m 4 -boot d -cdrom target/out/lasv.iso
 
 clean:
 	rm -rf target

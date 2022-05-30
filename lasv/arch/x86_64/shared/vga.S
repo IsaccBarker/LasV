@@ -1,7 +1,7 @@
 .code16
 
 .text
-    .global print_char
+    .global print_string
 
 /* print_string:
     push %bp

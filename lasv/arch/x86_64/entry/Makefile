@@ -13,5 +13,5 @@ all: $(OBJ)
 
 %.o: %.c $(DEPS)
 	$(PROGRESS) "CC" "$<"
-	$(CC) -S -o "$(BASE)/target/intermediate/$(shell basename $<.s)" $< -m16 -std=gnu99 -ffreestanding -O2 -Wall -Wextra $(CFLAGS)
+	$(CC) -S -o "$(BASE)/target/intermediate/$(shell basename $<.s)" $< -m16 -std=gnu99 -fPIC -ffreestanding -O2 -Wall -Wextra $(CFLAGS)
 	$(AS) -o "$(BASE)/target/obj/entry-$(shell basename $@)" "$(BASE)/target/intermediate/$(shell basename $<.s)" $(ASFLAGS)
