@@ -1,9 +1,9 @@
-OUTPUT_FORMAT(elf64-x86-64)
+OUTPUT_FORMAT(binary)
 ENTRY(_setup32)
 
 SECTIONS
 {
-	. = 0x8000;
+	. = 0x7E00;
 	_SETUP_START = .;
 
 	.text ALIGN(0x10) : {

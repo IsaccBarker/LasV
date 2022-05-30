@@ -1,3 +1,6 @@
+# All of this is getting uncomfortably slow...
+# TODO: Switch to non-recursive makefiles.
+
 include base.mk
 
 BASE="$(shell pwd)"

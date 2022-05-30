@@ -1,7 +1,7 @@
 include ../../../../base.mk
 
-DEPS = elf.h
-OBJ = boot.o elf.o
+DEPS =
+OBJ = boot.o
 
 all: $(OBJ)
 	$(PROGRESS) "LD" "boot.bin"
