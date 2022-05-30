@@ -46,3 +46,32 @@ reset_cursor:
 
     ret
 
+/* Video mode. We don't set it, but it's an option.
+ *  http://vitaly_filatov.tripod.com/ng/asm/asm_023.1.html */
+
+/* Screen color codes (from 0x0): Black, Blue, Green, Teal, Red */
+
+set_screen_style_boot:
+    mov $0x0B, %ah
+    mov $0x00, %bh
+    mov $0x01, %bl
+    int $0x10
+
+    ret
+
+set_screen_style_entry:
+    mov $0x0B, %ah
+    mov $0x00, %bh
+    mov $0x09, %bl
+    int $0x10
+
+    ret
+
+set_screen_error:
+    mov $0x0B, %ah
+    mov $0x00, %bh
+    mov $0x04, %bl
+    int $0x10
+
+    ret
+

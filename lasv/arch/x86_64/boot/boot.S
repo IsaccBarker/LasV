@@ -8,7 +8,6 @@
 
 .text
     .global _start
-    .global lasv_boot_elf
 
 _start:
     ljmp $0, $_setup16
@@ -26,16 +25,11 @@ _setup16:
 	/* Clear screen and reset text mode cursor. */
 	call clear_screen
 	call reset_cursor
+    call set_screen_style_boot
 
-    lea f, %si
-    call print_string
+    call load_sector_2
 
-    call load_elf_header_sector
-    call lasv_boot_elf
-
-    // call load_sector2
-
-	// ljmp $0, $SETUP_PHYS_ADDR
+	ljmp $0, $SETUP_PHYS_ADDR
 
 	/* Something went terribly wrong. * /
 	jmp die */
@@ -51,9 +45,6 @@ setup_id:
     . = _start + 510
     .byte 0x55
     .byte 0xaa
-
-f:
-    .asciz "f"
 
 // . = _start + (SETUP_PHYS_ADDR - BOOT_IMAGE_ADDR)
 

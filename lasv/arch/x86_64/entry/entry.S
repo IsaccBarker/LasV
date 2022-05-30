@@ -1,20 +1,24 @@
 .code16
 
-.set BOOTS_PHYS_ADDR,      0x00010000
-.set BOOTS_SEGMENT,        0x1000
-.set BOOTS_SEGMENT_OFFSET, 0x0000
-
 .text
     .global _setup32
-    .global lasv_enter
 
 _setup32:
-    .asciz "foo"
+    call clear_screen
+    call reset_cursor
+    call set_screen_style_entry
 
-    call lasv_enter
+    lea f, %si
+    call print_string
 
     hlt
 
+f:
+    .asciz "LasV... the V doesn't stand for five!"
+
 .include "../shared/screen.S"
 .include "../shared/vga.S"
+
+setup_id:
+    . = _setup32 + 512
 
