@@ -13,9 +13,6 @@
 _start:
     ljmp $0, $_setup16
 
-.include "drive.S"
-.include "mbr.S"
-
 /* We do this jump because for some reason the structure of
  * a modern MBR splits the code segment in two; 0x0000-0x00DA
  * and 0x00E0-0x01B8.
@@ -39,6 +36,7 @@ _setup16:
     call set_screen_style_boot
 
     /* TODO: Get the active parition and hope stage 2 is there. */
+    call get_active_partition
 
     call load_sector_2
 
@@ -52,6 +50,8 @@ die:
 
 .include "../shared/screen.S"
 .include "../shared/vga.S"
+.include "drive.S"
+.include "mbr.S"
 
 constrain_area_2:
     . = _start + 440
