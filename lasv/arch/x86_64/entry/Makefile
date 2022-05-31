@@ -1,7 +1,7 @@
 include ../../../../base.mk
 
 DEPS =
-OBJ = entry.o enter.o
+OBJ = entry.o
 
 all: $(OBJ)
 	$(PROGRESS) "LD" "entry.bin ($(OBJ))"
