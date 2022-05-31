@@ -4,36 +4,25 @@ ENTRY(_setup32)
 SECTIONS
 {
 	. = 0x7E00;
-	_SETUP_START = .;
 
-	.text ALIGN(0x10) : {
-		_TEXT_START = .;
+	.text : {
 		*(.text*)
-		_TEXT_END = .;
 	}
 
-	.rodata ALIGN(0x10) : {
-		_RODATA_START = .;
+	.rodata : {
 		*(.rodata*)
-		_RODATA_END = .;
 	}
 
-	.data ALIGN(0x10) : {
-		_DATA_START = .;
+	.data : {
 		*(.data*)
-		_DATA_END = .;
 	}
 
-	.bss ALIGN(0x10) : {
-		_BSS_START = .;
+	.bss : {
 		*(.bss*)
-		_BSS_END = .;
 	}
 
 	/DISCARD/ : {
 		*(.comment*)
 	}
-
-	_SETUP_END = .;
 }
 
