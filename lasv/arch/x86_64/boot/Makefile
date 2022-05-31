@@ -1,7 +1,7 @@
 include ../../../../base.mk
 
 DEPS =
-OBJ = boot.o
+OBJ = boot.o mbr.o
 
 all: $(OBJ)
 	$(PROGRESS) "LD" "boot.bin"
