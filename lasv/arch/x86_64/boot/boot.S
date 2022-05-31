@@ -5,12 +5,20 @@
 .set SETUP_PHYS_ADDR, 0x7E00
 .set SETUP_SEGMENT, 0x0800
 .set SETUP_SEGMENT_OFFSET, 0x0000
+.set MBR_CODE_AREA_2, 0x00E0
 
 .text
     .global _start
 
 _start:
     ljmp $0, $_setup16
+
+/* We do this jump because for some reason the structure of
+ * a modern MBR splits the code segment in two; 0x0000-0x00DA
+ * and 0x00E0-0x01B8.
+ *  https://en.wikipedia.org/wiki/Master_boot_record */
+space_to_area_2:
+    . = _start + 224
 
 _setup16:
     cli
@@ -27,6 +35,8 @@ _setup16:
 	call reset_cursor
     call set_screen_style_boot
 
+    /* TODO: Get the active parition and hope stage 2 is there. */
+
     call load_sector_2
 
 	ljmp $0, $SETUP_PHYS_ADDR
@@ -41,7 +51,10 @@ die:
 .include "../shared/screen.S"
 .include "../shared/vga.S"
 
-setup_id:
+constrain_area_2:
+    . = _start + 440
+
+space_to_magic:
     . = _start + 510
     .byte 0x55
     .byte 0xaa
