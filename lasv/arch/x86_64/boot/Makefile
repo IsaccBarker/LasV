@@ -1,7 +1,7 @@
 include ../../../../base.mk
 
 DEPS =
-OBJ = boot.o mbr.o
+OBJ = boot.o
 
 all: $(OBJ)
 	$(PROGRESS) "LD" "boot.bin"
@@ -15,3 +15,4 @@ all: $(OBJ)
 	$(PROGRESS) "CC" "$<"
 	$(CC) -S -o "$(BASE)/target/intermediate/$<.s" $< -std=gnu99 -ffreestanding -Os -s -fdelete-null-pointer-checks -Wall -Wextra $(CFLAGS)
 	$(AS) -o "$(BASE)/target/obj/boot-$@" "$(BASE)/target/intermediate/$<.s" $(ASFLAGS)
+

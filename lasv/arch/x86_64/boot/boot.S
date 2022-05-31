@@ -13,7 +13,8 @@
 _start:
     ljmp $0, $_setup16
 
-__get_entry_data:
+.include "drive.S"
+.include "mbr.S"
 
 /* We do this jump because for some reason the structure of
  * a modern MBR splits the code segment in two; 0x0000-0x00DA
@@ -49,7 +50,6 @@ _setup16:
 die:
 	hlt
 
-.include "drive.S"
 .include "../shared/screen.S"
 .include "../shared/vga.S"
 
