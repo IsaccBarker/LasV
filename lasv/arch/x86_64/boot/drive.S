@@ -1,10 +1,7 @@
 .code16
 
-/* This isn't generalized because it doesn't need to be.
- *  http://www.bioscentral.com/misc/biosint13.htm*/
-load_sector_2:
-    mov $2, %ah
-    /* Stage 2 is in the next sector. */
+read_entry_sector:
+    /* Read one sector. */
     mov $1, %al
     /* Cylinder number. */
     mov $0, %ch
@@ -14,11 +11,40 @@ load_sector_2:
     mov $0, %dh
     /* Disk number. */
     mov $0, %dl
+    /* Address to load into. */
+    mov $ENTRY_PHYS_ADDR, %bx
+
+    call read_sector
+
+    ret
+
+read_mbr_sector:
+    /* Read one sector. */
+    mov $1, %al
+    /* Cylinder number. */
+    mov $0, %ch
+    /* The MBR header is in the first sector. */
+    mov $1, %cl
+    /* Head number. */
+    mov $0, %dh
+    /* Disk number. */
+    mov $0, %dl
+    /* Address to load into. */
+    mov $MBR_PHYS_ADDR, %bx
+
+    call read_sector
+
+    ret
+
+/* This isn't generalized because it doesn't need to be.
+ *  http://www.bioscentral.com/misc/biosint13.htm*/
+read_sector:
+    /* Read. */
+    mov $2, %ah
+
     /* Magic "more memory than we can give you!" register. */
     mov $0, %ax
     mov %ax, %es
-    /* Address to load into. */
-    mov $SETUP_PHYS_ADDR, %bx
 
     int $0x13
 
@@ -40,5 +66,5 @@ sector_read_failure:
     hlt
 
 sector_read_failure_msg:
-    .asciz "Failed to read disk sector: "
+    .asciz "ds: rf"
 
