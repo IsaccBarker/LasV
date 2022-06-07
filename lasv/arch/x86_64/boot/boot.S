@@ -22,28 +22,28 @@ _start:
 _setup16:
     cli
 
-	xorw %ax, %ax
-	movw %ax, %ss
-	movw %ax, %ds
-	movw %ax, %es
+    xorw %ax, %ax
+    movw %ax, %ss
+    movw %ax, %ds
+    movw %ax, %es
 
-	movw $BOOT_PHYS_STACK_ADDR, %sp
+    movw $BOOT_PHYS_STACK_ADDR, %sp
 
     /* lea (_start + 0x01FF), %si
     call print_string */
 
-	/* Clear screen and reset text mode cursor. */
-	call clear_screen
-	call reset_cursor
+    /* Clear screen and reset text mode cursor. */
+    call clear_screen
+    call reset_cursor
     call set_screen_style_boot
 
     /* TODO: Get the active parition and hope stage 2 is there. */
     // call read_mbr_sector
     call get_active_partition
 
-	ljmp $0, $ENTRY_PHYS_ADDR
+    ljmp $0, $ENTRY_PHYS_ADDR
 
-	/* Something went terribly wrong. */
+    /* Something went terribly wrong. */
     hlt
 
 .include "../shared/screen.S"
