@@ -30,7 +30,7 @@ read_mbr_sector:
     /* Disk number. */
     mov $0, %dl
     /* Address to load into. */
-    mov $MBR_PHYS_ADDR, %bx
+    mov $MBR_TABLE_PHYS_ADDR, %bx
 
     call read_sector
 

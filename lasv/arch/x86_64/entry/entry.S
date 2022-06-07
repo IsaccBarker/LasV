@@ -52,7 +52,7 @@ introduction_msg:
     .ascii "is printed), and then pass it on via Multiboot v2.0."
     .byte 0x0D, 0x0A
     .byte 0x0D, 0x0A
-    .ascii "Only ELF executables in a FAT32 filesystem are supported."
+    .ascii "Only ELF executables in a BTRFS filesystem are supported."
     .byte 0x00
 
 .include "../shared/screen.S"

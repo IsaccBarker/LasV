@@ -15,7 +15,7 @@ all:
 	$(PROGRESS) "Status" "Done!"
 
 run: all
-	qemu-system-x86_64 -vga virtio -m 4 -boot d -cdrom target/out/intermediate/entry.bin #lasv.iso
+	qemu-system-x86_64 -vga virtio -drive format=raw,file=target/out/lasv.dd
 
 clean:
 	rm -rf target

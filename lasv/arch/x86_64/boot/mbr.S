@@ -6,12 +6,9 @@
 .text
     .global get_active_partition
 
-load_mbr:
-
-
 get_active_partition:
     pusha
-    mov $MBR_PHYS_ADDR, %cl
+    mov $MBR_TABLE_PHYS_ADDR, %cl
 
 /* Scan the text tabke entry. */
 .mbr_scan_look:
@@ -25,7 +22,7 @@ get_active_partition:
 
     /* Detect if there are still more table entries to process.
      * If not, fail. */
-    cmp $(MBR_PHYS_ADDR+(MBR_TABLE_LEN * MBR_TABLE_ENTRY_LEN)), %cl
+    cmp $(MBR_TABLE_PHYS_ADDR+(MBR_TABLE_LEN * MBR_TABLE_ENTRY_LEN)), %cl
     je .mbr_scan_look
 
 .mbr_scan_failed:
@@ -35,4 +32,7 @@ get_active_partition:
 .mbr_scan_done:
     popa
     ret
+
+aurora:
+    .asciz "a"
 

@@ -1,7 +1,6 @@
 label: dos
 label-id: 0x8b3a28f1
-device: target/out/lasv.iso
 unit: sectors
 sector-size: 512
 
-target/out/lasv.iso1 : start=        2048, size=       16384, type=1
+1 : start=        2048, size=       16384, type=1
