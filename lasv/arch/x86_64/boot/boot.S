@@ -16,13 +16,6 @@
 _start:
     ljmp $0, $_setup16
 
-/* We do this jump because for some reason the structure of
- * a modern MBR splits the code segment in two; 0x0000-0x00DA
- * and 0x00E0-0x01B8.
- *  https://en.wikipedia.org/wiki/Master_boot_record */
-space_to_area_2:
-    . = _start + 224
-
 _setup16:
     cli
 
@@ -57,7 +50,7 @@ die:
 .include "drive.S"
 .include "mbr.S"
 
-constrain_area_2:
+constrain_area:
     . = _start + 440
 
 space_to_magic:
