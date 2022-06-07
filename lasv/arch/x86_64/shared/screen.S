@@ -67,7 +67,7 @@ set_screen_style_entry:
 
     ret
 
-set_screen_error:
+set_screen_style_error:
     mov $0x0B, %ah
     mov $0x00, %bh
     mov $0x04, %bl

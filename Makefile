@@ -6,6 +6,7 @@ include base.mk
 BASE="$(shell pwd)"
 
 all:
+	mkdir -p "$(BASE)/mnt"
 	mkdir -p "$(BASE)/target"
 	mkdir -p "$(BASE)/target/obj"
 	mkdir -p "$(BASE)/target/out"

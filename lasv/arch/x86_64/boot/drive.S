@@ -18,24 +18,6 @@ read_entry_sector:
 
     ret
 
-read_mbr_sector:
-    /* Read one sector. */
-    mov $1, %al
-    /* Cylinder number. */
-    mov $0, %ch
-    /* The MBR header is in the first sector. */
-    mov $1, %cl
-    /* Head number. */
-    mov $0, %dh
-    /* Disk number. */
-    mov $0, %dl
-    /* Address to load into. */
-    mov $MBR_TABLE_PHYS_ADDR, %bx
-
-    call read_sector
-
-    ret
-
 /* This isn't generalized because it doesn't need to be.
  *  http://www.bioscentral.com/misc/biosint13.htm*/
 read_sector:
@@ -53,7 +35,7 @@ read_sector:
     ret
 
 sector_read_failure:
-    call set_screen_error
+    call set_screen_style_error
 
     lea sector_read_failure_msg, %si
     call print_string

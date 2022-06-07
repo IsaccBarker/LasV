@@ -1,38 +1,46 @@
 .code16
 
-.set MBR_TABLE_ENTRY_LEN, 0x0010
-.set MBR_TABLE_LEN,       0x0004
+.set MBR_TABLE_PARTITION_OFFSET,    0x01BE
+.set MBR_TABLE_ENTRY_LEN,           0x0010
+.set MBR_TABLE_LEN,                 0x0004
 
 .text
     .global get_active_partition
 
+/* Holy shit it works! */
 get_active_partition:
-    pusha
-    mov $MBR_TABLE_PHYS_ADDR, %cl
+    /* Start/iterator. */
+    mov (_start + 0x01BE), %bl
+    /* Boot signature. */
+    mov $0x80, %bh
+    /* Final address. */
+    mov $0x01FE, %al
 
-/* Scan the text tabke entry. */
-.mbr_scan_look:
-    /* Increase the iterator so it points to the new
-     * location of the next table entry. */
-    add $MBR_TABLE_ENTRY_LEN, %cl
+.loop:
+    /* Check if bootable. */
+    cmp %bl, %bh
+    je .ok
 
-    /* Detect if the entry is maked as active. */
-    cmp %cl, 0x1
-    je .mbr_scan_done
+    /* Move to next entry and see if we aren't at the end. */
+    add $0x10, %bl
+    cmp %bl, %al
+    jge .loop
 
-    /* Detect if there are still more table entries to process.
-     * If not, fail. */
-    cmp $(MBR_TABLE_PHYS_ADDR+(MBR_TABLE_LEN * MBR_TABLE_ENTRY_LEN)), %cl
-    je .mbr_scan_look
+    /* If we've looked through all four to no avail then we error. */
+    jmp .die
 
-.mbr_scan_failed:
-    call set_screen_error
+.die:
+    call set_screen_style_error
+
+    lea .no_bootable_partitions, %si
+    call print_string
+
     hlt
 
-.mbr_scan_done:
-    popa
+.ok:
+    /* Load all the right information into the right registers. */
     ret
 
-aurora:
-    .asciz "a"
+.no_bootable_partitions:
+    .asciz "pt: nb"
 
