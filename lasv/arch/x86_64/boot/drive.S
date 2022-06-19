@@ -1,14 +1,8 @@
 .code16
 
-read_entry_sector:
+read_fat_sector:
     /* Read one sector. */
     mov $1, %al
-    /* Cylinder number. */
-    mov $0, %ch
-    /* Sector number. */
-    mov $2, %cl
-    /* Head number. */
-    mov $0, %dh
     /* Disk number. */
     mov $0, %dl
     /* Address to load into. */
@@ -18,8 +12,7 @@ read_entry_sector:
 
     ret
 
-/* This isn't generalized because it doesn't need to be.
- *  http://www.bioscentral.com/misc/biosint13.htm*/
+/* http://www.bioscentral.com/misc/biosint13.htm */
 read_sector:
     /* Read. */
     mov $2, %ah
@@ -38,11 +31,6 @@ sector_read_failure:
     call set_screen_style_error
 
     lea sector_read_failure_msg, %si
-    call print_string
-
-    /* mov %ah, MISC_ADDR
-    lea MISC_ADDR, %si*/
-    movzx %ah, %si
     call print_string
 
     hlt

@@ -40,6 +40,7 @@ _setup16:
     /* TODO: Get the active parition and hope stage 2 is there. */
     // call read_mbr_sector
     call get_active_partition
+    call read_fat_sector
 
     ljmp $0, $ENTRY_PHYS_ADDR
 
@@ -50,6 +51,7 @@ _setup16:
 .include "../shared/vga.S"
 .include "drive.S"
 .include "mbr.S"
+.include "fat.S"
 
 .constrain_area_2:
     . = _start + 440
