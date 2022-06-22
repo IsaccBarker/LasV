@@ -1,16 +1,16 @@
 .code16
 
-read_fat_sector:
-    /* Read one sector. */
+/* read_fat_sector:
+    /* Read one sector. * /
     mov $1, %al
-    /* Disk number. */
+    /* Disk number. * /
     mov $0, %dl
-    /* Address to load into. */
+    /* Address to load into. * /
     mov $ENTRY_PHYS_ADDR, %bx
 
     call read_sector
 
-    ret
+    ret */
 
 /* http://www.bioscentral.com/misc/biosint13.htm */
 read_sector:

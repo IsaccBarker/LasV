@@ -38,9 +38,8 @@ _setup16:
     call set_screen_style_boot
 
     /* TODO: Get the active parition and hope stage 2 is there. */
-    // call read_mbr_sector
     call get_active_partition
-    call read_fat_sector
+    // call read_fat_sector
 
     ljmp $0, $ENTRY_PHYS_ADDR
 

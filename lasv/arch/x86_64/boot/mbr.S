@@ -35,15 +35,11 @@ get_active_partition:
 
 .ok:
     /* Load the right information into the right registers. */
-    /* Head */
-    add $0x01, %di
-    mov (%di), %dl
+    add $0x02, %di
+    mov (%di), %ax
 
-    push %dx
-    mov %sp, %si
-    call print_string
+    jmp .
 
-    /* First sector. */
     /* add $0x01, %bl
     mov %bl, %cl
     shrb $0x2, %cl */
