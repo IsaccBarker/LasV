@@ -15,6 +15,9 @@ all:
 	$(MAKE) -C lasv BASE="$(BASE)" all
 	$(PROGRESS) "Status" "Done!"
 
+media:
+	$(MAKE) -C lasv/arch/$(ARCH) BASE="$(BASE)" media
+
 run: all
 	qemu-system-x86_64 -vga virtio -drive format=raw,file=target/out/lasv.dd
 
