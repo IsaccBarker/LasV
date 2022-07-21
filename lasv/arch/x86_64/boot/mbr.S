@@ -10,35 +10,34 @@
 /* Holy shit it works! */
 get_active_partition:
     /* Start/iterator. */
-    mov (_start + 0x01BE), %di
+    mov (0x7C00 + 0x01BE), %bl
+    /* Boot signature. */
+    mov $0x80, %bh
+    /* Final address. */
+    mov $0x01FE, %al
 
 .loop:
     /* Check if bootable. */
-    cmp $0x80, (%di)
+    cmp %bl, %bh
     je .ok
 
     /* Move to next entry and see if we aren't at the end. */
-    add $0x10, %di
-    cmp $0x01FE, %di
+    add $0x10, %bl
+    cmp %bl, %al
     jge .loop
 
     /* If we've looked through all four to no avail then we error. */
     jmp .die
 
 .die:
-    call set_screen_style_error
-
-    lea .no_bootable_partitions, %si
-    call print_string
-
-    hlt
+    call bootable_partitions_failure
 
 .ok:
     /* Load the right information into the right registers. */
-    add $0x02, %di
+    /* add $0x02, %di
     mov (%di), %ax
 
-    jmp .
+    jmp . */
 
     /* add $0x01, %bl
     mov %bl, %cl
@@ -54,6 +53,14 @@ get_active_partition:
     mov %bl, %ch */
 
     ret
+
+bootable_partitions_failure:
+    call set_screen_style_error
+
+    lea .no_bootable_partitions, %si
+    call print_string
+
+    hlt
 
 .no_bootable_partitions:
     .asciz "pt: nb"

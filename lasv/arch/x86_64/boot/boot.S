@@ -35,7 +35,7 @@ _setup16:
     /* Clear screen and reset text mode cursor. */
     call clear_screen
     call reset_cursor
-    // call set_screen_style_boot
+    call set_screen_style_boot
 
     /* TODO: Get the active parition and hope stage 2 is there. */
     call get_active_partition
