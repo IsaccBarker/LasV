@@ -18,5 +18,7 @@ BUILD_MODE=debug
 
 # ---
 
+# Rust like style.
+# TODO: Open to changes, doesn't fit very well aethestically as of now.
 PROGRESS := @printf "  \\033[1;32m%8s\\033[0m  \\033[1;m%s\\033[0m\\n"
 
