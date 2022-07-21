@@ -1,24 +1,10 @@
 .code16
 
-/* read_fat_sector:
-    /* Read one sector. * /
-    mov $1, %al
-    /* Disk number. * /
-    mov $0, %dl
-    /* Address to load into. * /
-    mov $ENTRY_PHYS_ADDR, %bx
-
-    call read_sector
-
-    ret */
-
-/* http://www.bioscentral.com/misc/biosint13.htm */
+; http://www.bioscentral.com/misc/biosint13.htm
 read_sector:
-    /* Read. */
-    mov $2, %ah
+    mov $2, %ah             ; Read 'command'/'opcode'.
 
-    /* Magic "more memory than we can give you!" register. */
-    mov $0, %ax
+    mov $0, %ax             ; Magic "more memory than we can give you!" register.
     mov %ax, %es
 
     int $0x13

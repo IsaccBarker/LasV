@@ -29,22 +29,14 @@ _setup16:
 
     movw $BOOT_PHYS_STACK_ADDR, %sp
 
-    /* lea (_start + 0x01FF), %si
-    call print_string */
-
-    /* Clear screen and reset text mode cursor. */
     call clear_screen
     call reset_cursor
     call set_screen_style_boot
 
-    /* TODO: Get the active parition and hope stage 2 is there. */
-    call get_active_partition
-    // call read_fat_sector
-
+    call get_active_partition           ; TODO: Get the active parition and hope stage 2 is there.
     ljmp $0, $ENTRY_PHYS_ADDR
 
-    /* Something went terribly wrong. */
-    hlt
+    hlt                                 ; Something went terribly wrong.
 
 .include "../shared/screen.S"
 .include "../shared/vga.S"
