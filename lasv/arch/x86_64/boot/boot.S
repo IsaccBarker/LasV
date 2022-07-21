@@ -33,10 +33,10 @@ _setup16:
     call reset_cursor
     call set_screen_style_boot
 
-    call get_active_partition           ; TODO: Get the active parition and hope stage 2 is there.
+    call get_active_partition           # TODO: Get the active parition and hope stage 2 is there.
     ljmp $0, $ENTRY_PHYS_ADDR
 
-    hlt                                 ; Something went terribly wrong.
+    hlt                                 # Something went terribly wrong.
 
 .include "../shared/screen.S"
 .include "../shared/vga.S"

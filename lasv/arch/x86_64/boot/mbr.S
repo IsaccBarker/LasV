@@ -7,21 +7,21 @@
 .text
     .global get_active_partition
 
-; Holy shit it works!
+# Holy shit it works!
 get_active_partition:
-    mov (0x7C00 + 0x01BE), %bl              ; Start/iterator.
-    mov $0x80, %bh                          ; Boot signature.
-    mov $0x01FE, %al                        ; Final address.
+    mov (0x7C00 + 0x01BE), %bl              # Start/iterator.
+    mov $0x80, %bh                          # Boot signature.
+    mov $0x01FE, %al                        # Final address.
 
 .loop:
-    cmp %bl, %bh                            ; Check if bootable.
+    cmp %bl, %bh                            # Check if bootable.
     je .ok
 
-    add $0x10, %bl                          ; Move to next entry and see if we aren't at the end.
+    add $0x10, %bl                          # Move to next entry and see if we aren't at the end.
     cmp %bl, %al
     jge .loop
 
-    jmp .die                                ; If we've looked through all four to no avail then we error.
+    jmp .die                                # If we've looked through all four to no avail then we error.
 
 .die:
     call bootable_partitions_failure
