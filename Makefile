@@ -23,5 +23,6 @@ run: all
 
 clean:
 	rm -rf target
+	rm -rf mnt/*
 	$(PROGRESS) "Status" "Cleaned!"
 
