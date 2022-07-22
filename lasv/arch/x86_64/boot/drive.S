@@ -1,5 +1,12 @@
 .code16
 
+.text
+    .global load_active_parition
+
+read_active_partition:
+    mov $0x48, %al          # Read 72 sectors (technically not the minimum, but that's for really old hardware, like the archaic or the archaic floppy drives).
+    ret
+
 # http://www.bioscentral.com/misc/biosint13.htm
 read_sector:
     mov $2, %ah             # Read 'command'/'opcode'.

@@ -6,27 +6,50 @@
 
 .text
     .global get_active_partition
+    .global load_active_partition_metadata
 
 # Holy shit it works!
 get_active_partition:
-    mov (0x7C00 + 0x01BE), %bl              # Start/iterator.
+    movzx (0x7C00 + 0x01BE), %bx              # Start/iterator.
+    mov $0x80, %dx                          # Boot signature.
+    mov $0x01FE, %cx                        # Final address.
+
+    /* mov (0x7C00 + 0x01BE), %bl              # Start/iterator.
     mov $0x80, %bh                          # Boot signature.
-    mov $0x01FE, %al                        # Final address.
+    mov $0x01FE, %al                        # Final address. */
 
 .loop:
-    cmp %bl, %bh                            # Check if bootable.
+    cmp %bx, %dx                            # Check if bootable.
     je .ok
 
-    add $0x10, %bl                          # Move to next entry and see if we aren't at the end.
-    cmp %bl, %al
+    jmp .die
+
+    add $0x10, %bx                          # Move to next entry and see if we aren't at the end.
+    cmp %bx, %cx
     jge .loop
 
     jmp .die                                # If we've looked through all four to no avail then we error.
 
 .die:
-    call bootable_partitions_failure
+    call .no_bootable_partitions_failure
+
+    hlt                                     # Not nessisary, but cleans the code up. NOTE: Remove if space issues arise.
 
 .ok:
+    # Cool sanity checks!
+    #   Unsupported filesystem type checking.
+    #   More?
+
+    hlt
+
+    mov $0x1, %bh                           # TODO: Support filesystems other than FAT12.
+    add $0x04, %bl                          # File type field offset into the partition entry.
+    cmp %bl, %bh                            # Detect if filesystem is FAT12.
+    jne .unsupported_partition_format
+
+    ret
+
+load_active_partition_metadata:
     /* Load the right information into the right registers. */
     /* add $0x02, %di
     mov (%di), %ax
@@ -48,7 +71,7 @@ get_active_partition:
 
     ret
 
-bootable_partitions_failure:
+.no_bootable_partitions_failure:
     call set_screen_style_error
 
     lea .no_bootable_partitions, %si
@@ -58,4 +81,15 @@ bootable_partitions_failure:
 
 .no_bootable_partitions:
     .asciz "pt: nb"
+
+.unsupported_partition_format_failure:
+    call set_screen_style_error
+
+    lea .unsupported_partition_format, %si
+    call print_string
+
+    hlt
+
+.unsupported_partition_format:
+    .asciz "pe: uf"
 
