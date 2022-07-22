@@ -10,7 +10,7 @@
 
 # Holy shit it works!
 get_active_partition:
-    movzx (0x7C00 + 0x01BE), %bx              # Start/iterator.
+    mov $(0x7C00 + 0x01BE), %bx            # Start/iterator.
     mov $0x80, %dx                          # Boot signature.
     mov $0x01FE, %cx                        # Final address.
 
@@ -19,10 +19,12 @@ get_active_partition:
     mov $0x01FE, %al                        # Final address. */
 
 .loop:
-    cmp %bx, %dx                            # Check if bootable.
-    je .ok
+    mov (%bx), %ax
+    movzx %al, %ax
 
-    jmp .die
+    # Tomorrow morning problem: comparison not working for some odd reason.
+    cmp %ax, %dx                            # Check if bootable.
+    je .ok
 
     add $0x10, %bx                          # Move to next entry and see if we aren't at the end.
     cmp %bx, %cx
@@ -33,19 +35,15 @@ get_active_partition:
 .die:
     call .no_bootable_partitions_failure
 
-    hlt                                     # Not nessisary, but cleans the code up. NOTE: Remove if space issues arise.
-
 .ok:
     # Cool sanity checks!
     #   Unsupported filesystem type checking.
     #   More?
 
-    hlt
-
-    mov $0x1, %bh                           # TODO: Support filesystems other than FAT12.
-    add $0x04, %bl                          # File type field offset into the partition entry.
-    cmp %bl, %bh                            # Detect if filesystem is FAT12.
-    jne .unsupported_partition_format
+    /* mov $0x1, %dx                           # TODO: Support filesystems other than FAT12.
+    add $0x04, %bx                          # File type field offset into the partition entry.
+    cmp %bx, %dx                            # Detect if filesystem is FAT12.
+    jne .unsupported_partition_format_failure */
 
     ret
 
@@ -79,9 +77,6 @@ load_active_partition_metadata:
 
     hlt
 
-.no_bootable_partitions:
-    .asciz "pt: nb"
-
 .unsupported_partition_format_failure:
     call set_screen_style_error
 
@@ -89,6 +84,9 @@ load_active_partition_metadata:
     call print_string
 
     hlt
+
+.no_bootable_partitions:
+    .asciz "pt: nb"
 
 .unsupported_partition_format:
     .asciz "pe: uf"
