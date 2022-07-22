@@ -16,10 +16,6 @@ get_active_partition:
 
     push %ax
 
-    /* mov (0x7C00 + 0x01BE), %bl              # Start/iterator.
-    mov $0x80, %bh                          # Boot signature.
-    mov $0x01FE, %al                        # Final address. */
-
 .loop:
     mov (%bx), %ax
     movzx %al, %ax
