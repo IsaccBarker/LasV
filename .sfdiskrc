@@ -3,5 +3,4 @@ label-id: 0x8b3a28f1
 unit: sectors
 sector-size: 512
 
-1 : start=        2048, size=       16384, type=1, bootable
-
+1 : start=        4096, size=       6144, type=1, bootable

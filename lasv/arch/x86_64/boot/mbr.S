@@ -8,9 +8,8 @@
     .global get_active_partition
     .global load_active_partition_metadata
 
-# Holy shit it works!
 get_active_partition:
-    mov $(0x7C00 + 0x01BE), %bx            # Start/iterator.
+    mov $(0x7C00 + 0x01BE), %bx             # Start/iterator.
     mov $0x80, %dx                          # Boot signature.
     mov $0x01FE, %cx                        # Final address.
 
@@ -21,7 +20,6 @@ get_active_partition:
     movzx %al, %ax
 
     cmp %ax, %dx                            # Check if bootable.
-    pop %ax
     je .ok
 
     add $0x10, %bx                          # Move to next entry and see if we aren't at the end.
@@ -46,29 +44,37 @@ get_active_partition:
     cmp %ax, %dx                            # Detect if filesystem is FAT12.
     jne .unsupported_partition_format_failure
 
+    sub $0x04, %bx                          # Go back to start of partition table entry.
+
     pop %ax
 
     ret
 
 load_active_partition_metadata:
-    /* Load the right information into the right registers. */
-    /* add $0x02, %di
-    mov (%di), %ax
+    # Load the right information into the right registers.
+    # Something is seriously wrong in the MBR table that this
+    # parses. I don't think anything is wrong with the code,
+    # I manually checked and the MBR table entry literally
+    # says the 20th head.
+    # https://en.wikipedia.org/wiki/Master_boot_record#Partition_table_entries
 
-    jmp . */
+    mov $0x0, %al
+    mov %al, ACTIVE_PARTITION_DRIVE        # TODO: I think the only valid value here is 0 (for drive 0).
 
-    /* add $0x01, %bl
-    mov %bl, %cl
-    shrb $0x2, %cl */
+    add $0x01, %bx                          # Move to start of CHS address field (head first).
+    mov (%bx), %al
+    mov %al, ACTIVE_PARTITION_HEAD
 
-    /* Cylinder number. Technically, this is stored as a 10 bit number
-     * in the table with the upper two bits of the second byte of the
-     * CHS (the third byte being the rest obviously), but we are fitting
-     * it into a 8 bit register for the BIOS interupt, so it doesn't
-     * really matter.
-     * TODO: Does it matter? */
-    /* add $0x01, %bl
-    mov %bl, %ch */
+    add $0x01, %bx                          # Next CHS field ("sector in bits 5–0; bits 7–6 are high bits of cylinder" -- wikipedia).
+    mov (%bx), %al
+    and $0xF, %al                           # 0b001111 mask to remove the high cylinder bits.
+    mov %al, ACTIVE_PARTITION_SECTOR        # We're only loading the sector here, not the cylinder fragment, because we wouldn't be able to fit it into the BIOS call anyways.
+
+    add $0x01, %bx                          # Next CHS field (other bits of the cylinder)
+    mov (%bx), %al
+    mov %al, ACTIVE_PARTITION_CYLINDER
+
+    call convert_chs_lba
 
     ret
 
