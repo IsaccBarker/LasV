@@ -5,6 +5,8 @@
 .set SETUP_SEGMENT_OFFSET,      0x0000
 .set BOOT_PHYS_STACK_ADDR,      0x0700
 .set ENTRY_PHYS_ADDR,           0x7E00
+.set ENTRY_SEGMENT_ADDR,        0x07E0
+.set ENTRY_OFFSET_ADDR,         0x0000
 
 .text
     .global _start
@@ -26,7 +28,7 @@ _setup16:
     # call reset_cursor
     call set_screen_style_boot
 
-    # call check_lba_support
+    call check_lba_support
     call get_per_values
 
     call get_active_partition               # TODO: Get the active parition and hope stage 2 is there.
@@ -41,9 +43,8 @@ _setup16:
 
 .include "../shared/screen.S"
 .include "../shared/vga.S"
-.include "drive.S"
 .include "mbr.S"
-.include "fat.S"
+.include "drive.S"
 
 .constrain_area_2:
     . = _start + 440

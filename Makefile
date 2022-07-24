@@ -19,7 +19,7 @@ media:
 	$(MAKE) -C lasv/arch/$(ARCH) BASE="$(BASE)" media
 
 run: all
-	qemu-system-x86_64 -vga virtio -drive format=raw,file=target/out/lasv.dd
+	qemu-system-x86_64 -vga virtio -drive id=disk,format=raw,file=target/out/lasv.dd,if=none -device ahci,id=ahci -device ide-hd,drive=disk,bus=ahci.0
 
 clean:
 	rm -rf target

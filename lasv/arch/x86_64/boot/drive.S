@@ -27,7 +27,7 @@ starting_lba:
     .long 0x0                               # Upper 16-bits of 48-bit starting LBA */
 
 # Every BIOS since the mid-90's supports the LBA extension, but we might as well check anyways.
-/* check_lba_support:
+check_lba_support:
     mov $0x41, %ah
     mov $0x55aa, %bx
     mov $0x80, %dl
@@ -35,7 +35,7 @@ starting_lba:
     int $0x13
     jc .lba_not_supported
 
-    ret */
+    ret
 
 get_per_values:
     # Get how many headers there are per cylinder and how many sectors there are per track.
@@ -84,31 +84,34 @@ convert_chs_lba:
     ret
 
 read_active_partition:
-    push $0xffaa
-    push $0x10 # $0x1000
-    push $0x1
-    push $ENTRY_PHYS_ADDR
-    push $0x0
-    push ACTIVE_PARTITION_LBA
+    /* push $0xb0bb
+    push $0x1000                            # 10 byte packet + always 0 (0x00).
+    push $0x0001                            # Number of sectors to transfer.
+    push $ENTRY_PHYS_ADDR                   # Transfer buffer address.
+    push $0x0000                            # Transfer buffer offset.
+    push ACTIVE_PARTITION_LBA               # LBA. */
 
-    mov $0x42, %ah
-    mov %sp, %ds
-    mov $0x80, %dl
+    push $2048 # ACTIVE_PARTITION_LBA               # LBA.
+    push $ENTRY_OFFSET_ADDR                 # Transfer buffer offset.
+    push $ENTRY_SEGMENT_ADDR                # Transfer buffer address.
+    push $0x007F                            # Number of sectors to transfer. "Some Phoenix BIOSes are limited to a maximum of 127 sectors." -- wikipedia.
+    push $0x1000                            # 10 byte packet + always 0 (0x00).
 
     # NOTE
     # Here, we want to get the address of the start of the disk address packet
     # on the stack, but for some reason you cannot dereference anything here.
     # You can do it earlier in the program, but not here. Figure out why this
     # is, and you will have cracked the code!
+    mov %sp, %bx
+    mov (%bx), %ds
 
-    hlt
+    mov $0x42, %ah                          # Extended Read Sectors From Drives.
+    mov $0x80, %dl                          # Typically for the C drive.
 
     int $0x13
     jc .sector_read_failure
 
-    # hlt
-
-    # ret
+    ret
 
 .sector_read_failure:
     call set_screen_style_error
