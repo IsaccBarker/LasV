@@ -84,26 +84,25 @@ convert_chs_lba:
     ret
 
 read_active_partition:
-    /* push $0xb0bb
-    push $0x1000                            # 10 byte packet + always 0 (0x00).
+    /* push $0x1000                            # 10 byte packet + always 0 (0x00).
     push $0x0001                            # Number of sectors to transfer.
     push $ENTRY_PHYS_ADDR                   # Transfer buffer address.
     push $0x0000                            # Transfer buffer offset.
     push ACTIVE_PARTITION_LBA               # LBA. */
 
-    push $2048 # ACTIVE_PARTITION_LBA               # LBA.
-    push $ENTRY_OFFSET_ADDR                 # Transfer buffer offset.
+    push 0x0
+    push 0x0
+    push 0x0
+    push 0x0
+    # push ACTIVE_PARTITION_LBA               # LBA.
     push $ENTRY_SEGMENT_ADDR                # Transfer buffer address.
-    push $0x007F                            # Number of sectors to transfer. "Some Phoenix BIOSes are limited to a maximum of 127 sectors." -- wikipedia.
+    push $ENTRY_OFFSET_ADDR                 # Transfer buffer offset.
+    push $0x0001                            # Number of sectors to transfer. "Some Phoenix BIOSes are limited to a maximum of 127 sectors." -- wikipedia.
     push $0x1000                            # 10 byte packet + always 0 (0x00).
 
-    # NOTE
-    # Here, we want to get the address of the start of the disk address packet
-    # on the stack, but for some reason you cannot dereference anything here.
-    # You can do it earlier in the program, but not here. Figure out why this
-    # is, and you will have cracked the code!
-    mov %sp, %bx
-    mov (%bx), %ds
+    mov $0x006f, %bx
+    mov %bx, %ds
+    mov $0x0004, %si
 
     mov $0x42, %ah                          # Extended Read Sectors From Drives.
     mov $0x80, %dl                          # Typically for the C drive.

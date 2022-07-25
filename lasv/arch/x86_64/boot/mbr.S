@@ -65,9 +65,9 @@ load_active_partition_metadata:
     mov (%bx), %al
     mov %al, ACTIVE_PARTITION_HEAD
 
-    add $0x01, %bx                          # Next CHS field ("sector in bits 5–0; bits 7–6 are high bits of cylinder" -- wikipedia).
+    add $0x01, %bx                          # Next CHS field ("sector in bits 5-0; bits 7-6 are high bits of cylinder" -- wikipedia).
     mov (%bx), %al
-    and $0xF, %al                           # 0b001111 mask to remove the high cylinder bits.
+    and $0x3F, %al                          # 0b00111111 mask to remove the high cylinder bits.
     mov %al, ACTIVE_PARTITION_SECTOR        # We're only loading the sector here, not the cylinder fragment, because we wouldn't be able to fit it into the BIOS call anyways.
 
     add $0x01, %bx                          # Next CHS field (other bits of the cylinder)
