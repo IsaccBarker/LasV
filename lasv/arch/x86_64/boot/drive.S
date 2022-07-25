@@ -16,15 +16,16 @@
 
 .set ACTIVE_PARTITION_LBA,      0x0707
 
-/* active_partition_disk_address_packet:
-    .byte 0x10                              # Size of packet (0x10 or 0x18; 16 or 24 bytes)
-    .byte 0x0                               # Reserved (0x00)
-    .word 0x1                               # Number of blocks to transfer (Only 1 sector for us)
-    .word ENTRY_PHYS_ADDR                   # Destination address
-    .word 0x0                               # Offset
-starting_lba:
-    .long 0x0                               # Lower 32-bits of 48-bit starting LBA
-    .long 0x0                               # Upper 16-bits of 48-bit starting LBA */
+.align 16
+disk_address_packet:
+    # .long (0x10 + 0x00 + 0x0001)             # 10 byte packet + always 0 + number of sectors ("Some Phoenix BIOSes are limited to a maximum of 127 sectors." -- wikipedia).
+    .byte 0x10
+    .byte 0x00
+    .word 0x0001
+    .word ENTRY_OFFSET_ADDR                 # Address to load into's offset.
+    .word ENTRY_SEGMENT_ADDR                # Address to load into's segment.
+    .long 0x0                               # Lower 32-bits of 48-bit starting LBA.
+    .long 0x0                               # Upper 16-bits of 48-bit starting LBA.
 
 # Every BIOS since the mid-90's supports the LBA extension, but we might as well check anyways.
 check_lba_support:
@@ -90,24 +91,24 @@ read_active_partition:
     push $0x0000                            # Transfer buffer offset.
     push ACTIVE_PARTITION_LBA               # LBA. */
 
-    push 0x0
-    push 0x0
-    push 0x0
-    push 0x0
-    # push ACTIVE_PARTITION_LBA               # LBA.
-    push $ENTRY_SEGMENT_ADDR                # Transfer buffer address.
-    push $ENTRY_OFFSET_ADDR                 # Transfer buffer offset.
-    push $0x0001                            # Number of sectors to transfer. "Some Phoenix BIOSes are limited to a maximum of 127 sectors." -- wikipedia.
-    push $0x1000                            # 10 byte packet + always 0 (0x00).
-
-    mov $0x006f, %bx
+    /* mov $0x006f, %bx
     mov %bx, %ds
-    mov $0x0004, %si
+    mov $0x0004, %si */
+
+    # Segment
+    # mov $disk_address_packet, %ax
+    # mov $16, %bx
+    # div %bx
+    # mov %ax, %ds
+
+    # Offset
+    mov $0x7d00, %si
 
     mov $0x42, %ah                          # Extended Read Sectors From Drives.
     mov $0x80, %dl                          # Typically for the C drive.
 
     int $0x13
+    hlt
     jc .sector_read_failure
 
     ret

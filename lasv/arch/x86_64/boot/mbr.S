@@ -58,7 +58,8 @@ load_active_partition_metadata:
     # says the 20th head.
     # https://en.wikipedia.org/wiki/Master_boot_record#Partition_table_entries
 
-    mov $0x0, %al
+    # mov $0x0, %al
+    xor %al, %al
     mov %al, ACTIVE_PARTITION_DRIVE        # TODO: I think the only valid value here is 0 (for drive 0).
 
     add $0x01, %bx                          # Move to start of CHS address field (head first).
