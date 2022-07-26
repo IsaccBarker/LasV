@@ -1,18 +1,18 @@
 .code16
 
-active_partition_head:
+active_partition_head_w:
     .word
-active_partition_sector:
+active_partition_sector_w:
     .word
-active_partition_cylinder:
+active_partition_cylinder_w:
     .word
-active_partition_lba:
+active_partition_lba_w:
     .word
 
 # https://en.wikipedia.org/wiki/Logical_block_addressing#CHS_conversion
-heads_per_cylinder:
+heads_per_cylinder_w:
     .word
-sectors_per_track:
+sectors_per_track_w:
     .word
 
 .align 16
@@ -46,10 +46,10 @@ get_per_values:
     jc .per_values_int_failed
 
     add $0x1, %dh
-    mov %dh, heads_per_cylinder
+    mov %dh, heads_per_cylinder_w
 
     and $0x3f, %cl
-    mov %cl, sectors_per_track
+    mov %cl, sectors_per_track_w
 
     ret
 
@@ -57,29 +57,29 @@ convert_chs_lba:
     # LBA = (C × HPC + H) × SPT + (S − 1)
     # https://en.wikipedia.org/wiki/Logical_block_addressing#CHS_conversion
     # (C
-    mov active_partition_cylinder, %ax
+    mov active_partition_cylinder_w, %ax
 
     # * HPC
-    mov heads_per_cylinder, %cl             # Chop off the sectors per track.
+    mov heads_per_cylinder_w, %cl             # Chop off the sectors per track.
     mul %cl
 
     # + H)
-    mov active_partition_head, %cl
+    mov active_partition_head_w, %cl
     movzx %cl, %cx
     add %cx, %ax
 
     # * SPT
-    mov sectors_per_track, %cl
+    mov sectors_per_track_w, %cl
     mul %cl
 
     # + (S
-    mov active_partition_sector, %bx
+    mov active_partition_sector_w, %bx
 
     # - 1)
     sub $0x1, %bx
 
     add %bx, %ax
-    mov %ax, active_partition_lba
+    mov %ax, active_partition_lba_w
 
     ret
 
