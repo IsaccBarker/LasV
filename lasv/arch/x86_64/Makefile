@@ -19,5 +19,10 @@ media:
 	sudo mkdir -p ../../../mnt/boot
 	sudo cp ../../../target/out/intermediate/entry.bin ../../../mnt/boot
 	sudo umount ../../../mnt
+	# Optional debug shit.
+	echo "DISK INITIAL SECTOR."
+	xxd -l 512 ../../../target/out/lasv.dd
+	echo "FAT12 INITIAL SECTOR."
+	sudo xxd -l 512 $(LV_LOOPBACK)
 	sudo losetup -d $(shell sudo losetup -f)
 

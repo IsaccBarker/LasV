@@ -8,9 +8,6 @@
 .set ENTRY_SEGMENT_ADDR,        0x0000
 .set ENTRY_OFFSET_ADDR,         0x7E00
 
-.text
-    .global _start
-
 _start:
     ljmp $0, $_setup16
 
@@ -35,8 +32,6 @@ _setup16:
     call load_active_partition_metadata
     call read_active_partition
 
-    hlt
-
     ljmp $0, $ENTRY_PHYS_ADDR
 
     hlt                                     # Something went terribly wrong.
@@ -53,6 +48,4 @@ _setup16:
     . = _start + 510
     .byte 0x55
     .byte 0xaa
-
-// . = _start + (SETUP_PHYS_ADDR - BOOT_IMAGE_ADDR)
 
