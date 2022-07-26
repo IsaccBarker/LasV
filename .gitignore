@@ -54,7 +54,7 @@ dkms.conf
 target/
 mnt/
 
-# Ignore qemu guest-memory-dump files
+# Ignore qemu dump-guest-memory files
 *.txt
 *.dump
 *.mem
